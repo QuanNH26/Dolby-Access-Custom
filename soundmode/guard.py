@@ -30,7 +30,7 @@ class Guard:
     def _follow(self, ep):
         """New headphones became the default output (another user, re-paired, swapped): move the mode onto them,
         with the mode that pair used last time. Needs Equalizer APO on that device; otherwise just say so."""
-        if ep.surround != "virtual" or ep.bus == "virtual" or ep.guid == (engine.device_guid() or "").lower():
+        if ep.surround == "call" or ep.bus not in ("bluetooth", "usb") or ep.guid == (engine.device_guid() or "").lower():
             return []
         if not any(l.kind == "eapo" for l in ep.layers):
             return [Event("warn", f"{ep.label} chua co Equalizer APO: mo DeviceSelector.exe (admin), tick thiet bi nay, "
