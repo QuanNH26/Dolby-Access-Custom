@@ -1,0 +1,37 @@
+name: Bug report
+description: Something does not work as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for reporting. A screenshot of the **Devices & overlap guard** page helps a lot.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, what you got.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: App version
+      description: The number in the VERSION file or the Setup file name, e.g. 1.0.0
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Headphones / output device
+      placeholder: e.g. UGREEN HiTune Max5c (Bluetooth), Realtek speakers
+  - type: dropdown
+    id: windows
+    attributes:
+      label: Windows
+      options: ["Windows 11", "Windows 10"]
+  - type: textarea
+    id: log
+    attributes:
+      label: Activity log or error text
+      description: Copy from the Activity page, or %LOCALAPPDATA%\DolbyAccessCustom\gui.log if the app does not start.
+      render: text
