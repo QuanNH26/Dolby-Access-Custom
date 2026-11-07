@@ -6,7 +6,7 @@
 
   Output
     Dolby Access Custom.exe                 launcher, next to the sources (run the app straight from this folder)
-    dist\DolbyAccessCustom-Setup-<ver>.exe  one-file installer for users: no admin, installs per user, keeps settings on update
+    dist\DolbyAccessCustom-Setup-<ver>.exe  one-file Next/Next installer: no admin, per user, pick folder + shortcuts, keeps settings on update
 
   Steps
     1. launcher exe + native helpers (C# compiler that ships with Windows, no downloads)

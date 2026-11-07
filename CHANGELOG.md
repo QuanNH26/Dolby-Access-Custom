@@ -4,6 +4,13 @@ All notable changes to this project are listed here. Versions follow [Semantic V
 
 ## [Unreleased]
 
+### Changed
+- Setup is now a classic step-by-step wizard: Welcome, License, install folder (with Browse and free-space check),
+  desktop / Start menu shortcut checkboxes, a Ready summary, a progress page and a Finish page with
+  **Launch Dolby Access Custom now** (on by default). Still per-user with no admin; an update reuses the earlier
+  install folder and remembers the desktop shortcut choice. `/silent [/dir="..."]` installs without questions.
+- Apps & features now shows the version, size and install date; uninstall works from any install folder.
+
 ## [1.0.0] - 2026-11-07
 
 ### Added

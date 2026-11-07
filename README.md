@@ -45,7 +45,8 @@
 ## Install
 
 1. Download **`DolbyAccessCustom-Setup-<version>.exe`** from the [latest release](https://github.com/QuanNH26/Dolby-Access-Custom/releases/latest).
-2. Run it. The app installs for your Windows user (no admin) and adds Start menu and Desktop shortcuts.
+2. Run it and click through the wizard: accept the license, keep or change the install folder, choose the desktop and
+   Start menu shortcuts, then **Install**. It installs for your Windows user (no admin) and opens the app when done.
 3. Open the app and click **Set up**, pick your headphones and approve the Windows prompt. Done.
 
 Running a newer Setup updates the app and keeps your settings. Uninstall it from *Settings › Apps*. Before you uninstall,
