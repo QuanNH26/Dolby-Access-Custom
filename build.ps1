@@ -40,7 +40,12 @@ $want = @{
 }
 foreach ($n in $want.Keys) {
   $p = Join-Path $inst $n
-  if (-not (Test-Path $p)) { Write-Host "  downloading $n"; [Net.ServicePointManager]::SecurityProtocol = 'Tls12'; Invoke-WebRequest $want[$n][0] -OutFile $p -UseBasicParsing }
+  if (-not (Test-Path $p)) {
+    # curl follows SourceForge's mirror redirects (Invoke-WebRequest can get an HTML page instead of the file)
+    Write-Host "  downloading $n"
+    & curl.exe -fsSL --retry 4 --retry-delay 5 -o $p $want[$n][0]
+    if ($LASTEXITCODE) { throw "download of $n failed" }
+  }
   if ((Get-FileHash $p -Algorithm MD5).Hash.ToLower() -ne $want[$n][1]) { Remove-Item $p; throw "$n does not match the official checksum" }
   Write-Host "  $n OK"
 }
