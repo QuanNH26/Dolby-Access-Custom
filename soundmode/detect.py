@@ -85,9 +85,25 @@ class Endpoint:
     default_comm: bool = False
     layers: list = field(default_factory=list)
     sysfx_disabled: bool = False   # "Audio enhancements: Off" for this device
+    channels: int = 0              # shared-mode format Windows runs the device at
+    rate: int = 0
+    speaker_mask: int = 0          # physical speaker layout (KSAUDIO_SPEAKER_*), 0 = not reported
+    bus: str = ""                  # bluetooth | usb | virtual | builtin
 
     @property
     def label(self): return f"{self.name} ({self.iface})" if self.iface else self.name
+
+    @property
+    def surround(self):
+        """How 7.1 reaches this device:
+        native     the device itself takes 6+ channels (USB 7.1 headset, AV receiver, virtual cable set to 7.1)
+        call       Bluetooth Hands-Free (mono call link) - never use for listening
+        virtual    stereo device: 7.1 only through the app's virtualizer (CABLE Input -> HRIR -> bridge)"""
+        if self.bus == "bluetooth" and ("hands-free" in self.iface.lower() or self.name.lower() == "headset"):
+            return "call"
+        if self.channels >= 6 or self.speaker_mask & 0x630:    # BL/BR or SL/SR present
+            return "native"
+        return "virtual"
 
     @property
     def shaping(self): return [l for l in self.layers if l.active]
@@ -126,6 +142,26 @@ def vendor_name(clsid):
     for k, v in VENDOR_ALIAS.items():
         if low == k or low.startswith(k): return v
     return nm
+
+
+PK_DEVICE_FORMAT = "{f19f064d-082c-4e27-bc73-6882a1bb8e4c},0"    # PKEY_AudioEngine_DeviceFormat (PROPVARIANT blob)
+PK_PHYS_SPEAKERS = "{1da5d803-d492-4edd-8c23-e0c0ffee7f0e},3"    # PKEY_AudioEndpoint_PhysicalSpeakers
+PK_ENUMERATOR = "{a45c254e-df1c-4efd-8020-67d146a850e0},24"      # BTHENUM / USB / HDAUDIO / ROOT ...
+
+
+def _fill_format(ep, p):
+    import struct
+    v = p.get(PK_DEVICE_FORMAT.lower())
+    if isinstance(v, bytes) and len(v) >= 16:
+        f = v[8:]                                   # skip the PROPVARIANT header (vt + reserved + size)
+        ep.channels, ep.rate = struct.unpack("<HI", f[2:8])
+        if struct.unpack("<H", f[:2])[0] == 0xFFFE and len(f) >= 24 and not ep.speaker_mask:
+            ep.speaker_mask = struct.unpack("<I", f[20:24])[0]
+    phys = p.get(PK_PHYS_SPEAKERS.lower())
+    if isinstance(phys, int): ep.speaker_mask = phys
+    enum = str(p.get(PK_ENUMERATOR.lower(), "")).upper()
+    ep.bus = ("bluetooth" if "BTH" in enum else "usb" if "USB" in enum else
+              "virtual" if "VB-AUDIO" in ep.iface.upper() or enum.startswith("ROOT") or "SWD" in enum else "builtin")
 
 
 def _vt_bool(v):
@@ -198,6 +234,7 @@ def scan():
             g = sub.strip("{}").lower(); n = native.get(g, {})
             ep = Endpoint(g, p.get(PK_NAME.lower(), "?"), p.get(PK_IFACE.lower(), ""), state,
                           n.get("default", False), n.get("default_comm", False))
+            _fill_format(ep, p)
             # Windows Spatial sound
             mx = n.get("spatial_max_dyn", -1)
             if state == 1 and mx >= 0:
@@ -249,5 +286,5 @@ def scan():
 
 
 def as_json(res):
-    return json.dumps({"endpoints": [dict(asdict(e), conflict=e.conflict, label=e.label) for e in res["endpoints"]],
+    return json.dumps({"endpoints": [dict(asdict(e), conflict=e.conflict, label=e.label, surround=e.surround) for e in res["endpoints"]],
                        "eapo": res["eapo"], "info": res["info"]}, ensure_ascii=False, indent=1)

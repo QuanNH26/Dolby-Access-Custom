@@ -43,7 +43,8 @@ def _endpoint(flow_key, name):
 def _format(props):
     blob = props.get(PK_FORMAT.lower())
     if not isinstance(blob, bytes) or len(blob) < 16: return None, None
-    ch = int.from_bytes(blob[2:4], "little"); sr = int.from_bytes(blob[4:8], "little")
+    # the registry blob is an 8-byte PROPVARIANT header (VT_BLOB + size) followed by the WAVEFORMATEX
+    ch = int.from_bytes(blob[10:12], "little"); sr = int.from_bytes(blob[12:16], "little")
     return ch, sr
 
 
@@ -71,7 +72,12 @@ def _virtualizer():
     text = _config_text(detect.EAPO_CFG / "config.txt")
     on = "outputchannelcount == 8" in text.lower()
     hrir = sorted({h for h in re.findall(r"(?mi)^\s*Convolution:\s*(\S+\.wav)", text) if "sur_" in h.lower()})
-    missing = [h for h in hrir if not (detect.EAPO_CFG / h).exists() and not (detect.HESUVI / h).exists()]
+    # Convolution paths are relative to the file that includes them (e.g. config\soundmode\surround71.txt)
+    def found(h):
+        if (detect.EAPO_CFG / h).exists() or (detect.HESUVI / h).exists(): return True
+        try: return any(detect.EAPO_CFG.rglob(Path(h).name))
+        except OSError: return False
+    missing = [h for h in hrir if not found(h)]
     return {"configured": on, "hrir": hrir, "hrir_missing": missing}
 
 

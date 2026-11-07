@@ -74,8 +74,19 @@ def device_guid():
 GUARD_RE = re.compile(r'(regexSearch\(")([0-9a-fA-F-]{36})(")')
 
 
+# HeSuVi defines its on/off variable ("active", from deact.txt) only inside its own block, which is guarded by the
+# headphones in devna.txt. On any other headphones "active" would be undefined and the mode silently off, so the
+# generated file defines it itself.
+ACTIVE_DEF = "Include: deact.txt\n"
+
+
 def render(mode: Mode, guid: str):
-    body = "\n".join("    " + l if l.strip() else l for l in mode.body().splitlines())
+    head = "Do not edit; switch modes in the app.\n"
+    return _render(mode, guid).replace(head, head + ACTIVE_DEF, 1)
+
+
+def _render(mode: Mode, guid: str):
+    body ="\n".join("    " + l if l.strip() else l for l in mode.body().splitlines())
     if mode.include:   # the linked file carries its own device guard
         linked = (HSV / mode.include).read_text(encoding="utf-8-sig") if (HSV / mode.include).exists() else ""
         g = GUARD_RE.search(linked)
@@ -120,7 +131,10 @@ def apply(mode: Mode, guid=None):
     bk = _backup(files)
     for p, t in files.items():
         p.write_text(t, encoding="utf-8")
-    _save_state(mode=mode.id, device=device_guid(), applied=datetime.datetime.now().isoformat(timespec="seconds"))
+    dev = device_guid()
+    per = dict(state().get("device_modes", {}))   # each pair of headphones (each user) keeps its own last mode
+    if dev: per[dev] = mode.id
+    _save_state(mode=mode.id, device=dev, device_modes=per, applied=datetime.datetime.now().isoformat(timespec="seconds"))
     return files, bk
 
 
@@ -128,7 +142,8 @@ def retarget(guid):
     """Point the current mode at other headphones (re-render soundmode.txt for that device GUID)."""
     cur = current() if ACTIVE.exists() or POSTLUDE.exists() else None
     ids = {m.id for m in modes()}
-    for cand in (cur, state().get("mode"), "music-warm-dolby3", "flat"):   # fresh PC: start from the last-used / default mode
+    remembered = state().get("device_modes", {}).get((guid or "").lower())
+    for cand in (remembered, cur, state().get("mode"), "music-warm-dolby3", "flat"):   # fresh PC: start from the last-used / default mode
         if cand in ids: return apply(get(cand), guid)
     raise RuntimeError("No mode found in the modes folder")
 

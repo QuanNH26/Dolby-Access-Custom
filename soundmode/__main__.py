@@ -22,6 +22,10 @@ def cmd_status(a):
         tag = " [MAC DINH]" if e.default else (" [LIEN LAC]" if e.default_comm else "")
         st = "" if e.state == 1 else " (khong ket noi)"
         print(f"\n== {e.label}{tag}{st}")
+        if e.state == 1:
+            sur = {"native": "nhan 7.1 truc tiep", "virtual": "stereo -> 7.1 qua bo ao hoa (CABLE Input)",
+                   "call": "kenh goi dien, khong dung de nghe"}[e.surround]
+            print(f"   {e.bus or '?'}, {e.channels} kenh {e.rate} Hz -> 7.1: {sur}")
         if not e.layers: print("   (khong co lop xu ly nao)")
         for l in e.layers:
             mark = "ON " if l.active else "off"

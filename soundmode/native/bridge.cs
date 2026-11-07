@@ -1,5 +1,6 @@
 // bridge.exe CAPTURE_GUID [RENDER_GUID] - forward a capture endpoint (VB-Audio "CABLE Output") to a render endpoint
 // (default: the default playback device) with ~30 ms latency. Replaces Windows "Listen to this device".
+// Built as a Windows (no console) app so nothing pops up at logon; messages go to bridge.log next to the exe.
 // Build: build.cmd (Windows' own csc, no downloads). Runs until killed.
 using System;
 using System.Runtime.InteropServices;
@@ -40,6 +41,8 @@ interface IAudioCaptureClient {
 [ComImport, Guid("BCDE0395-E52F-467C-8E3D-C4579291692E")] class MMDeviceEnumerator { }
 
 static class Bridge {
+    static readonly string LogPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bridge.log");
+    static void Log(string m) { try { System.IO.File.AppendAllText(LogPath, DateTime.Now.ToString("s") + " " + m + Environment.NewLine); } catch { } }
     static void Check(int hr, string what) { if (hr != 0) throw new Exception(what + " failed 0x" + hr.ToString("X8")); }
     static IAudioClient Open(IMMDeviceEnumerator en, string guid, int flow) {
         IMMDevice d;
@@ -50,11 +53,11 @@ static class Bridge {
     }
 
     static int Main(string[] args) {
-        if (args.Length < 1) { Console.Error.WriteLine("usage: bridge CAPTURE_GUID [RENDER_GUID]"); return 2; }
+        if (args.Length < 1) { Log("usage: bridge CAPTURE_GUID [RENDER_GUID]"); return 2; }
         var en = (IMMDeviceEnumerator)new MMDeviceEnumerator();
         while (true) {
             try { Run(en, args[0], args.Length > 1 ? args[1] : null); }
-            catch (Exception e) { Console.Error.WriteLine(DateTime.Now.ToString("s") + " " + e.Message + " - retry in 3 s"); }
+            catch (Exception e) { Log(e.Message + " - retry in 3 s"); }
             Thread.Sleep(3000);   // device lost (BT reconnect, default changed): reopen
         }
     }
@@ -71,7 +74,7 @@ static class Bridge {
         uint rbuf; ren.GetBufferSize(out rbuf);
         int fb = f.nBlockAlign; var tmp = new byte[fb * 48000];
         Check(cap.Start(), "capture Start"); Check(ren.Start(), "render Start");
-        Console.WriteLine("bridging " + f.nChannels + " ch " + f.nSamplesPerSec + " Hz");
+        Log("bridging " + f.nChannels + " ch " + f.nSamplesPerSec + " Hz");
         while (true) {
             Thread.Sleep(5);
             uint n; Check(cc.GetNextPacketSize(out n), "GetNextPacketSize");

@@ -27,6 +27,20 @@ class Guard:
         self.paused_by_us = v
         engine._save_state(paused_by_guard=v)
 
+    def _follow(self, ep):
+        """New headphones became the default output (another user, re-paired, swapped): move the mode onto them,
+        with the mode that pair used last time. Needs Equalizer APO on that device; otherwise just say so."""
+        if ep.surround != "virtual" or ep.bus == "virtual" or ep.guid == (engine.device_guid() or "").lower():
+            return []
+        if not any(l.kind == "eapo" for l in ep.layers):
+            return [Event("warn", f"{ep.label} chua co Equalizer APO: mo DeviceSelector.exe (admin), tick thiet bi nay, "
+                                  "khoi dong lai may de dung che do cua app.")]
+        try:
+            engine.retarget(ep.guid)
+            return [Event("info", f"Da chuyen che do sang {ep.label} ({engine.current()}).")]
+        except Exception as e:
+            return [Event("warn", f"Khong chuyen duoc che do sang {ep.label}: {e}")]
+
     def check(self, res=None):
         """Run once. Returns (scan result, list of Event)."""
         res = res or detect.scan()
@@ -34,6 +48,7 @@ class Guard:
         ev = []
         ep = next((e for e in res["endpoints"] if e.default and e.state == 1), None)
         if not ep: return res, ev
+        ev += self._follow(ep)
         foreign = [l for l in ep.shaping if l.kind in FOREIGN]
         vendor = [l for l in ep.shaping if l.kind == "vendor"]
         ours = next((l for l in ep.layers if l.kind == "eapo"), None)
