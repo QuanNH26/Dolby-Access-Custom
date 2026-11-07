@@ -1,0 +1,21 @@
+{
+ "name": "Movie - Balanced",
+ "dolby": {
+  "profile": "Movie",
+  "ieq": "Balanced"
+ },
+ "measured": "dolby-probe/runs/dolby_movie_balanced",
+ "probe": {
+  "crossfeed_dB_1k": -79.6,
+  "attack": {
+   "tau_s": 0.48,
+   "gain_change_dB": -2.89
+  },
+  "release": {
+   "tau_s": 0.04,
+   "gain_change_dB": 10.24
+  },
+  "steady_ratio": 1.13
+ },
+ "notes": "EQ measured for this profile; leveler copied from Music Warm (refit pending)."
+}

@@ -1,0 +1,15 @@
+# built / downloaded by build.ps1
+/runtime/
+/dist/
+/vendor/installers/
+/vendor/VBCABLE/
+/Dolby Access Custom.exe
+soundmode/native/*.exe
+
+# per-PC data and logs
+/state.json
+/backups/
+/dolby-probe/runs/
+*.log
+__pycache__/
+*.pyc

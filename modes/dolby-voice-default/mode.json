@@ -1,0 +1,21 @@
+{
+ "name": "Voice",
+ "dolby": {
+  "profile": "Voice",
+  "ieq": "Default"
+ },
+ "measured": "dolby-probe/runs/dolby_voice_default",
+ "probe": {
+  "crossfeed_dB_1k": -77.8,
+  "attack": {
+   "tau_s": null,
+   "gain_change_dB": -0.0
+  },
+  "release": {
+   "tau_s": null,
+   "gain_change_dB": 0.0
+  },
+  "steady_ratio": 1.0
+ },
+ "notes": "Stereo: transparent at normal level, also with real speech (speech probe: quiet 0.0 dB, every band 0.0). Loud speech (-16 dBFS rms) is pulled down 1.1 dB in the 500 Hz-1 kHz region = peak limiter only. No leveler."
+}

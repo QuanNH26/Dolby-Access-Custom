@@ -1,0 +1,18 @@
+{
+ "name": "Music - Warm (khop Dolby, leveler nho + IEQ)",
+ "dolby": {
+  "profile": "Music",
+  "ieq": "Warm"
+ },
+ "leveler": {
+  "memleveler": "ts=0.010489;gate=5.7386;tiu=42.99;tid=5.9558;g0=5.7417;k=0.43587;L0=-32;gmin=-1.1601;gmax=15.856;thr=3.9307;rf=1.1507;tfa=0.14248;tfr=0.23044;i0=-47.692;ieq=1;q_ts=0.001;q_tru=3.1644;q_trd=36.0675;q_b0=-1.7752;q_a=0.1817;q_c=0.4652;q_f0=-0.954;q_gmin=-4.2124;q_gmax=2.5558;q_tg=0.1631;q_base=-1.6;q_fh=2500;bass=1;l_ts=5.3411;l_tru=0.6121;l_trd=63.5109;l_b0=4.0431;l_a=0.4953;l_c=-0.4408;l_f0=9.182;l_gmin=-0.0203;l_gmax=4.1277;l_tg=0.001;l_base=3.3;l_fl=200"
+ },
+ "notes": "Closed-loop match of music-warm: Dolby loudness + loud-level treble regulator.",
+ "regulator": {
+  "threshold_dB": -12.0,
+  "ratio": 1.45,
+  "freq_Hz": 1500.0,
+  "attack_ms": 50.0,
+  "release_ms": 500.0
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "name": "Music - Warm (khop Dolby)",
+ "dolby": {
+  "profile": "Music",
+  "ieq": "Warm"
+ },
+ "leveler": {
+  "makeup_dB": 9.0,
+  "ratio": 1.1
+ },
+ "notes": "Closed-loop match of music-warm: Dolby loudness; peaks held by the Nova safety limiter at -1 dBFS.",
+ "regulator": {
+  "threshold_dB": -12.0,
+  "ratio": 1.45,
+  "freq_Hz": 1500.0,
+  "attack_ms": 50.0,
+  "release_ms": 500.0
+ }
+}

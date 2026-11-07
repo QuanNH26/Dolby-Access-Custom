@@ -1,0 +1,21 @@
+{
+ "name": "Music - Detailed",
+ "dolby": {
+  "profile": "Music",
+  "ieq": "Detailed"
+ },
+ "measured": "dolby-probe/runs/dolby_music_detailed",
+ "probe": {
+  "crossfeed_dB_1k": -79.2,
+  "attack": {
+   "tau_s": 0.34,
+   "gain_change_dB": -2.45
+  },
+  "release": {
+   "tau_s": 0.02,
+   "gain_change_dB": 7.14
+  },
+  "steady_ratio": 1.11
+ },
+ "notes": "EQ measured for this profile; leveler copied from Music Warm (refit pending)."
+}

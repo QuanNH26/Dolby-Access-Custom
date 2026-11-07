@@ -1,0 +1,19 @@
+{
+ "name": "Movie - Balanced (khop Dolby)",
+ "dolby": {
+  "profile": "Movie",
+  "ieq": "Balanced"
+ },
+ "leveler": {
+  "makeup_dB": 8.3,
+  "ratio": 1.1
+ },
+ "notes": "Closed-loop match of dolby-movie-balanced: Dolby loudness + loud-level treble regulator.",
+ "regulator": {
+  "threshold_dB": -10.0,
+  "ratio": 2.5,
+  "freq_Hz": 1100.0,
+  "attack_ms": 50.0,
+  "release_ms": 500.0
+ }
+}

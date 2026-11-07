@@ -1,0 +1,5 @@
+{
+ "name": "Flat (khong EQ)",
+ "dolby": null,
+ "notes": "Reference: Equalizer APO passes audio unchanged. Use to compare against the other modes."
+}

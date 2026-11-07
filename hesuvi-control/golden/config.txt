@@ -1,0 +1,6 @@
+Include: HeSuVi\hesuvi.txt
+
+# soundmode: 7.1 virtualizer, only on the VB-Audio "CABLE Input" device (set to 7.1)
+Device: {45396fbb-0019-41de-9ff6-67f50c11468a}
+Include: soundmode\surround71.txt
+Device: all

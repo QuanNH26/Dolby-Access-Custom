@@ -1,0 +1,7 @@
+{
+ "name": "Music - Warm",
+ "dolby": {"profile": "Music", "ieq": "Warm"},
+ "include": "music-warm.txt",
+ "measured": "2026-10-20 dolby-probe/runs/dolby_music_warm",
+ "notes": "Linked to HeSuVi\\music-warm.txt, which is tuned and kept by hesuvi-control (golden copy there). EQ + TDR Nova leveler."
+}

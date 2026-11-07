@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dolby Access Custom</title>
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="app.css">
+</head>
+<body class="booting">
+<div class="shell">
+  <aside class="side">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32"><defs><linearGradient id="bm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7aa7ff"/><stop offset="1" stop-color="#a77bff"/></linearGradient></defs>
+          <rect width="32" height="32" rx="9" fill="url(#bm)"/>
+          <path d="M8 19v-6M12 22V10M16 25V7M20 21v-10M24 18v-4" stroke="#0a0c11" stroke-width="2.4" stroke-linecap="round"/></svg>
+      </div>
+      <div class="brand-text"><b>Dolby Access</b><span>Custom</span></div>
+    </div>
+
+    <nav class="nav">
+      <button data-page="modes" class="on"><svg viewBox="0 0 24 24"><path d="M4 18V9M9 18V5M14 18v-7M19 18V8" /></svg><span>Sound modes</span></button>
+      <button data-page="devices"><svg viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg><span>Devices &amp; overlap guard</span><i class="dot" id="navAlert" hidden></i></button>
+      <button data-page="surround"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><path d="M7.5 7.5a6.4 6.4 0 0 0 0 9M16.5 7.5a6.4 6.4 0 0 1 0 9M4.6 4.6a10.5 10.5 0 0 0 0 14.8M19.4 4.6a10.5 10.5 0 0 1 0 14.8"/></svg><span>7.1 Surround</span><i class="dot warn" id="navSur" hidden></i></button>
+      <button data-page="measure"><svg viewBox="0 0 24 24"><path d="M3 12h3l2-6 4 12 3-9 2 3h4"/></svg><span>Measure Dolby</span></button>
+      <button data-page="log"><svg viewBox="0 0 24 24"><path d="M6 4h12v16H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Activity</span></button>
+    </nav>
+
+    <div class="side-foot">
+      <div class="dev-card" id="devCard">
+        <div class="dev-ico"><svg viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg></div>
+        <div class="dev-txt"><b id="devName">Looking for devices…</b><span id="devSub">&nbsp;</span></div>
+      </div>
+      <div class="foot-links">
+        <button data-open="sound">Sound settings</button>
+        <button data-open="folder">Folder</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="top">
+      <div class="top-title">
+        <h1 id="pageTitle">Sound modes</h1>
+        <div class="status" id="status"><i></i><span>Scanning…</span></div>
+      </div>
+      <label class="power" title="Sound processing on / off">
+        <span class="power-label" id="powerLabel">Off</span>
+        <input type="checkbox" id="power"><span class="switch"><span class="knob"></span></span>
+      </label>
+    </header>
+
+    <div class="banner" id="notice" hidden>
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.01"/></svg>
+      <div class="banner-txt"><b id="noticeTitle"></b><span id="noticeText"></span></div>
+      <button class="btn primary" id="noticeBtn"></button>
+    </div>
+
+    <div class="banner" id="banner" hidden>
+      <svg viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.01"/></svg>
+      <div class="banner-txt"><b id="bannerTitle"></b><span id="bannerText"></span></div>
+      <button class="btn primary" id="bannerFix" hidden>Turn off extra layers</button>
+      <button class="btn ghost" data-open="sound">Open Sound settings</button>
+    </div>
+
+    <!-- ============ MODES ============ -->
+    <section class="page" id="page-modes">
+      <div class="hero" id="hero">
+        <div class="hero-glow"></div>
+        <div class="hero-icon" id="heroIcon"></div>
+        <div class="hero-txt">
+          <span class="eyebrow">Now playing</span>
+          <h2 id="heroName">—</h2>
+          <p id="heroSub">&nbsp;</p>
+          <div class="chips" id="heroChips"></div>
+        </div>
+        <div class="hero-curve"><svg id="heroCurve" viewBox="0 0 320 120" preserveAspectRatio="none"></svg></div>
+      </div>
+
+      <h3 class="sec">Profiles</h3>
+      <div class="profiles" id="profiles"></div>
+
+      <div class="two">
+        <div class="panel">
+          <div class="panel-head"><h3>Intelligent Equalizer</h3><span class="hint" id="ieqHint"></span></div>
+          <div class="ieqs" id="ieqs"></div>
+          <div class="variants" id="variants"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Frequency response</h3><span class="hint" id="curveHint"></span></div>
+          <svg class="chart" id="chart" viewBox="0 0 560 260"></svg>
+          <p class="notes" id="modeNotes"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DEVICES ============ -->
+    <section class="page" id="page-devices" hidden>
+      <div class="panel guard">
+        <div class="guard-ico"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
+        <div class="guard-txt">
+          <h3>Overlap guard</h3>
+          <p>Each device should have only one sound-shaping layer. When Spatial sound, Enhancements or another app also processes the audio, the app reacts as chosen here.</p>
+        </div>
+        <div class="seg" id="policy">
+          <button data-v="auto">Auto pause &amp; resume</button>
+          <button data-v="warn">Warn only</button>
+        </div>
+      </div>
+      <div class="panel-head row"><h3 class="sec">Playback devices</h3><button class="btn ghost sm" id="rescan">Rescan</button></div>
+      <div class="devices" id="devices"></div>
+      <div class="panel nahimic" id="nahimicBox" hidden>
+        <div class="guard-txt"><h3>Nahimic app</h3><p id="nahimicText"></p></div>
+        <button class="btn ghost sm" id="nahimicBtn"></button>
+      </div>
+      <p class="info" id="scanInfo"></p>
+    </section>
+
+    <!-- ============ SURROUND ============ -->
+    <section class="page" id="page-surround" hidden>
+      <div class="sur-hero">
+        <div class="sur-head">
+          <div>
+            <span class="eyebrow">Virtual 7.1 for headphones</span>
+            <h2>7.1 Surround <span class="pill" id="surPill">Checking…</span></h2>
+            <p>Games and movies that output to <b>CABLE Input</b> get 7.1 speakers rendered with the measured Dolby Movie HRIR. Music and anything else playing straight to your headphones stays stereo and is not affected.</p>
+          </div>
+          <label class="power" title="Run the bridge that sends the virtual 7.1 mix to your headphones">
+            <span class="power-label" id="surPowerLabel">Off</span>
+            <input type="checkbox" id="surPower"><span class="switch"><span class="knob"></span></span>
+          </label>
+        </div>
+        <div class="chain" id="surChain"></div>
+      </div>
+
+      <div class="two">
+        <div class="panel">
+          <div class="panel-head"><h3>Speaker test</h3><span class="hint" id="surTestHint">Noise moves around the 7 speakers</span></div>
+          <div class="stage">
+            <svg class="room" id="surRoom" viewBox="0 0 320 240"></svg>
+          </div>
+          <div class="row gap">
+            <button class="btn primary" id="surTest">Play 7.1 test</button>
+            <span class="hint">Front left → center → front right → side right → rear right → rear left → side left</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Apps using 7.1</h3><button class="btn ghost sm" data-open="apps-volume">Choose apps…</button></div>
+          <div class="apps" id="surApps"></div>
+          <ol class="steps small">
+            <li><span>Click <b>Choose apps…</b> (Windows "App volume and device preferences").</span></li>
+            <li><span>Start the game or player, then set its <b>Output</b> to <b>CABLE Input (VB-Audio Virtual Cable)</b>.</span></li>
+            <li><span>In the game, pick <b>7.1</b> or <b>Surround / Home theater</b> speakers if it asks.</span></li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="panel-head row"><h3 class="sec">Checks</h3><button class="btn ghost sm" data-open="sound">Sound settings</button></div>
+      <div class="checks" id="surChecks"></div>
+    </section>
+
+    <!-- ============ MEASURE ============ -->
+    <section class="page" id="page-measure" hidden>
+      <div class="two">
+        <div class="panel">
+          <h3>Measure a Dolby Access mode</h3>
+          <ol class="steps">
+            <li><span>Set the headphones' <b>Spatial sound</b> to <b>Dolby Atmos for Headphones</b>.</span></li>
+            <li><span>In Dolby Access, pick the same profile and Intelligent EQ as below.</span></li>
+            <li><span>Stop music/video and don't touch the volume for about 90 seconds.</span></li>
+          </ol>
+          <div class="form">
+            <label>Profile<select id="mProfile"></select></label>
+            <label>Intelligent EQ<select id="mIeq"></select></label>
+          </div>
+          <div class="row gap">
+            <button class="btn primary" id="mStart">Start measuring</button>
+            <button class="btn ghost" data-open="sound">Open Sound settings</button>
+          </div>
+          <p class="fine">HeSuVi is bypassed while measuring so only Dolby is recorded. The result becomes a new mode in the list.</p>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Progress</h3><span class="hint" id="mHint">Idle</span></div>
+          <div class="progress"><i id="mBar"></i></div>
+          <pre class="console" id="mLog" data-empty="The measurement log appears here."></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LOG ============ -->
+    <section class="page" id="page-log" hidden>
+      <div class="panel-head row"><h3 class="sec">Recent activity</h3>
+        <button class="btn ghost sm" id="listen">Live check (5 s)</button></div>
+      <div class="log" id="log"><p class="empty">No activity yet.</p></div>
+    </section>
+  </main>
+</div>
+
+<div class="toasts" id="toasts"></div>
+<dialog class="confirm" id="confirm">
+  <h3 id="cTitle"></h3>
+  <div id="cBody"></div>
+  <div class="confirm-btns"><button class="btn ghost" id="cNo">Cancel</button><button class="btn primary" id="cYes">Continue</button></div>
+</dialog>
+<script src="app.js"></script>
+</body>
+</html>

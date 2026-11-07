@@ -1,0 +1,21 @@
+{
+ "name": "Game - Performance",
+ "dolby": {
+  "profile": "Game",
+  "ieq": "Performance"
+ },
+ "measured": "dolby-probe/runs/dolby_game_performance",
+ "probe": {
+  "crossfeed_dB_1k": -77.8,
+  "attack": {
+   "tau_s": null,
+   "gain_change_dB": -0.0
+  },
+  "release": {
+   "tau_s": null,
+   "gain_change_dB": 0.0
+  },
+  "steady_ratio": 1.0
+ },
+ "notes": "Stereo: transparent (flat EQ, no leveler). Positional processing only applies to 5.1/7.1/Atmos game audio."
+}
